@@ -25,7 +25,7 @@ class HomeController extends Controller
     public function index(Request $request)
     {
         $page = $request->page ?? 1;
-
+        
         $files = Cache::remember('files_' . auth()->user()->id . '_' . $page, 30, function() {
             return auth()->user()->files()->paginate(30);
         });

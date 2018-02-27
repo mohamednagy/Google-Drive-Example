@@ -44,30 +44,35 @@ class GoogleDriveController extends Controller
         $totalFiles = [];
         $pageToken = null;
 
-        do {
+        try {
+            do {
             
-            $params = $pageToken ? ['pageToken' => $pageToken] : [];
-            $params['fields']   = 'files(id, name, mimeType, size, webContentLink)';
-            $params['pageSize'] = 1000;
-            $files = $drive->files->listFiles($params);
+                $params = $pageToken ? ['pageToken' => $pageToken] : [];
+                $params['fields']   = 'files(id, name, mimeType, size, webContentLink)';
+                $params['pageSize'] = 100;
 
-            foreach ($files as $file) {
-                $fileMetaData = [
-                    'file_id'       => $file->id,
-                    'title'         => $file->name,
-                    'mime_type'     => $file->mimeType,
-                    'download_url'  => $file->webContentLink,
-                    'size'          => $file->size != null ? ($file->size / 1024) : null,
-                    'user_id'       => auth()->user()->id
-                ];
+                $files = $drive->files->listFiles($params);
 
-                $totalFiles[] = $fileMetaData;
-            }
-            
-            $pageToken = $files->getNextPageToken();
-        } while($pageToken);
+                foreach ($files->getFiles() as $file) {
+                    $fileMetaData = [
+                        'file_id'       => $file->id,
+                        'title'         => $file->name,
+                        'mime_type'     => $file->mimeType,
+                        'download_url'  => $file->webContentLink,
+                        'size'          => $file->size != null ? ($file->size / 1024) : null,
+                        'user_id'       => auth()->user()->id
+                    ];
+    
+                    $totalFiles[] = $fileMetaData;
+                }
+                
+                $pageToken = $files->getNextPageToken();
+            } while($pageToken);
 
-        auth()->user()->updateFiles($totalFiles);
+            auth()->user()->updateFiles($totalFiles);
+        } catch(\Exception $e) {
+            session()->flash('error' ,$e->getMessage());    
+        }
 
         return redirect('/home');
     }

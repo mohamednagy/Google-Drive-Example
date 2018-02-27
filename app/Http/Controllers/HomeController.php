@@ -26,8 +26,6 @@ class HomeController extends Controller
     {
         $page = $request->page ?? 1;
 
-        $page = $request->has('page') ? $request->query('page') : 1;
-        
         $files = Cache::remember('files_' . auth()->user()->id . '_' . $page, 30, function() {
             return auth()->user()->files()->paginate(30);
         });

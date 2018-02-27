@@ -8,12 +8,18 @@
                 <div class="panel-heading">Dashboard</div>
 
                 <div class="panel-body">
+                    @if (session()->has('error'))
+                        <div class="alert alert-danger">
+                            {{ session()->get('error') }}
+                        </div>
+                    @endif
+
                     @if (!auth()->user()->gd_tokens)
                         <a href="{{ app('GDClient')->createAuthUrl() }}" class="btn btn-primary"> Google Drive Auth</a>
                     @else
                         <a href="{{ url('load-files') }}" class=""> Load/Update your files from google drive</a>
                     @endif
-
+    
                     <br>
                     <br>
                     <div class="">

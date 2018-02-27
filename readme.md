@@ -32,6 +32,10 @@ after configuring the database connection, run the migrations
 $ php artisan migrate
 ```
 
+then generate the app key
+```
+$ php artisan key:generate
+```
 
 <br>
 finally

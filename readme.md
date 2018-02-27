@@ -14,8 +14,14 @@ install the dependancies <br>
 $ composer install
 ```
 
-run the migrations
+then
+```
+$cp .env.example .env
+```
 
+from the `.env` file set `DB_DATABASE`, `DB_USERNAME`  and `DB_PASSWORD`
+
+after configuring the database connection, run the migrations
 ```
 $ php artisan migrate
 ```
